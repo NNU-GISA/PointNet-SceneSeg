@@ -4,7 +4,6 @@ Created on Mon Jul  9 20:28:39 2018
 
 @author: Isaac
 """
-
 # -*- coding: utf-8 -*-
 # vispy: gallery 10
 # Copyright (c) Vispy Development Team. All Rights Reserved.
@@ -18,24 +17,18 @@ import numpy as np
 import vispy.scene
 from vispy.scene import visuals
 
-#
-# Make a canvas and add simple view
-#
+# set canvas
 canvas = vispy.scene.SceneCanvas(keys='interactive', show=True)
 view = canvas.central_widget.add_view()
 
-
 # data sample
-point_cloud = np.load('./data/vkitti3d_dataset_v1.0/02/0001_00379.npy')  # shape: (401326, 7)
+point_cloud = np.load('./data/vkitti3d_dataset_v1.0/02/0001_00379.npy')
 data1 = point_cloud[:,:6]
 label1 = point_cloud[:,-1]
-
 print(data1.shape, label1.shape)
-#%%
+
 # create scatter object and fill in the data
 scatter = visuals.Markers()
-ind = 15
-
 rgb_codes = [[255,0,0],
             [255,255,0],
             [255,0,255],
@@ -51,8 +44,10 @@ rgb_codes = [[255,0,0],
             [150,0,190]]
 
 color = np.zeros((label1.shape[0], 3))
+
 for i in range(label1.shape[0]):
-    color[i,:] = [code/255 for code in rgb_codes[int(label1[i])]]
+    #color[i, :] = [code/255 for code in rgb_codes[int(label1[i])]]
+    color[i, :] = [code / 255 for code in data1[i, 3:]]
 
 
 scatter.set_data(data1[:,:3], edge_color=None, face_color=color, size=5)
