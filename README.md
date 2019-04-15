@@ -16,5 +16,3 @@ Once you have downloaded and prepared data, to start training use main.ipynb.
 For data visualization you can use vis_data_vispy.py file.
 
 ### Selected Projects that Use PointNet
-# PointNet-VKITTI3D
-# PointNet-VKITTI3D
