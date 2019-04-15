@@ -11,7 +11,7 @@ All files are provided as numpy .npy files. Each file contains a N x F matrix, w
 
 ## Training
 
-Once you have downloaded and prepared data, to start training use main.ipynb. 
+Once you have downloaded and prepared data, to start training use train_vkitti.py. 
 
 ## Visualise data
 
