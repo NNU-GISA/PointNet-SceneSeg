@@ -1,5 +1,7 @@
 # 3D Semantic Segmentation of virtual kitti dataset using PointNet
 
+This project is a modified version of <a href="https://github.com/kargarisaac/PointNet-SemSeg-VKITTI3D" target="_blank">PointNet-SemSeg-VKITTI3D</a>.
+
 The main code is from <a href="https://github.com/charlesq34/pointnet" target="_blank">PointNet GitHub Repo<a>
 
 ## Dataset
