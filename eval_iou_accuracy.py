@@ -21,12 +21,9 @@ for i in range(num_room):
         positive_classes[pred_l] += 1
         true_positive_classes[gt_l] += int(gt_l==pred_l)
 
-
 print(gt_classes)
 print(positive_classes)
 print(true_positive_classes)
-
-
 print('Overall accuracy: {0}'.format(sum(true_positive_classes)/float(sum(positive_classes))))
 
 print 'IoU:'

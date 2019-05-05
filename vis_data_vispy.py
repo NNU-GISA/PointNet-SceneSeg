@@ -22,7 +22,8 @@ canvas = vispy.scene.SceneCanvas(keys='interactive', show=True)
 view = canvas.central_widget.add_view()
 
 # data sample
-point_cloud = np.load('./data/vkitti3d_dataset_v1.0/02/0001_00379.npy')
+point_cloud = np.load('./data/vkitti3d_dataset_v1.0/03/0002_00031.npy')
+#print(point_cloud[0, :])
 data1 = point_cloud[:,:6]
 label1 = point_cloud[:,-1]
 print(data1.shape, label1.shape)
@@ -46,7 +47,9 @@ rgb_codes = [[255,0,0],
 color = np.zeros((label1.shape[0], 3))
 
 for i in range(label1.shape[0]):
+    # Label color
     #color[i, :] = [code/255 for code in rgb_codes[int(label1[i])]]
+    # Data color
     color[i, :] = [code / 255 for code in data1[i, 3:]]
 
 

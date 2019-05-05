@@ -13,13 +13,10 @@ import socket
 import glob
 import os
 import sys
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(BASE_DIR)
-sys.path.append(os.path.join(BASE_DIR, 'utils'))
 import provider
 from model import *
 
-## COSTANT
+########################################## CONSTANT ###############################################
 BATCH_SIZE = 24
 BATCH_SIZE_EVAL = 24
 NUM_POINT = 4096
@@ -39,18 +36,18 @@ BN_DECAY_DECAY_STEP = float(DECAY_STEP)
 BN_DECAY_CLIP = 0.99
 HOSTNAME = socket.gethostname()
 
-## TRAIN LOG
+########################################### LOAD DATA ###########################################
 LOG_DIR = 'log'
 if not os.path.exists(LOG_DIR): os.mkdir(LOG_DIR)
 LOG_FOUT = open(os.path.join(LOG_DIR, 'log_train.txt'), 'w')
-# LOG_FOUT.write(str(FLAGS)+'\n')
 
-## DATA LOAD
+# data dir
 folders = glob.glob('./data/vkitti3d_dataset_v1.0/*')
 ALL_FILES = []
 for folder in folders:
     np_arrays = glob.glob(folder + "/*")
     ALL_FILES += np_arrays
+# sample 4096 points
 total_data = np.empty((90, 4096, 6))
 total_label = np.empty((90, 4096))
 for i, file in enumerate(ALL_FILES):
@@ -67,7 +64,7 @@ print(ALL_FILES)
 print(total_data.shape)
 print(total_label.shape)
 
-####################################### Data Prepare #######################################
+######################################## NORMALIZE DATA #######################################
 features = ["x","y","z","r","g","b"]
 for i in range(6):
     print(features[i] + "_range :", np.min(total_data[:, :, i]), np.max(total_data[:, :, i]))
@@ -80,26 +77,22 @@ xmax = []
 for i in range(6):
     xmin.append(np.min(X[:, :, i]))
     xmax.append(np.max(X[:, :, i]))
-
 print(xmin)
 print(xmax)
 
 X_normal = np.zeros(X.shape)
 for i in range(6):
     X_normal[:,:,i] = (X[:,:,i] - xmin[i]) / (xmax[i] - xmin[i])
-
 features = ["x","y","z","r","g","b"]
 for i in range(6):
     print(features[i] + "_range :", np.min(X_normal[:, :, i]), np.max(X_normal[:, :, i]))
 
 from sklearn.model_selection import train_test_split
-
 train_data, test_data, train_label, test_label = train_test_split(X_normal, y, test_size=0.26, random_state=42)
-
 print(train_data.shape, train_label.shape)
 print(test_data.shape, test_label.shape)
 
-####################################### Train Function #######################################
+####################################### TRAIN FUNCTION #######################################
 def log_string(out_str):
     LOG_FOUT.write(out_str + '\n')
     LOG_FOUT.flush()
