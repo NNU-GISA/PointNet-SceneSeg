@@ -73,7 +73,8 @@ data_batch_list = []
 label_batch_list = []
 for h5_filename in ALL_FILES:
     # use provider.loadDataFile
-    data_batch, label_batch = provider.loadDataFile('{}/data/{}'.format(ROOT_DIR, h5_filename))
+    #data_batch, label_batch = provider.loadDataFile('{}/data/{}'.format(ROOT_DIR, h5_filename))
+    data_batch, label_batch = provider.loadDataFile(h5_filename)
     data_batch_list.append(data_batch)
     label_batch_list.append(label_batch)
 data_batches = np.concatenate(data_batch_list, 0)

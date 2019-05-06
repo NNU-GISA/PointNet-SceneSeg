@@ -5,7 +5,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 ROOT_DIR = os.path.dirname(BASE_DIR)
 sys.path.append(BASE_DIR)
 from model_vkitti import *
-import indoor3d_util
+import vkitti_util
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--gpu', type=int, default=0, help='GPU to use [default: GPU 0]')
@@ -99,7 +99,7 @@ def eval_one_epoch(sess, ops, room_path, out_data_label_filename, out_gt_label_f
     fout_data_label = open(out_data_label_filename, 'w')
     fout_gt_label = open(out_gt_label_filename, 'w')
     
-    current_data, current_label = indoor3d_util.room2blocks_wrapper_normalized(room_path, NUM_POINT)
+    current_data, current_label = vkitti_util.room2blocks_wrapper_normalized(room_path, NUM_POINT)
     current_data = current_data[:,0:NUM_POINT,:]
     current_label = np.squeeze(current_label)
     # Get room dimension..
@@ -139,8 +139,8 @@ def eval_one_epoch(sess, ops, room_path, out_data_label_filename, out_gt_label_f
             pts[:,3:6] *= 255.0
             pred = pred_label[b, :]
             for i in range(NUM_POINT):
-                color = indoor3d_util.g_label2color[pred[i]]
-                color_gt = indoor3d_util.g_label2color[current_label[start_idx+b, i]]
+                color = vkitti_util.g_label2color[pred[i]]
+                color_gt = vkitti_util.g_label2color[current_label[start_idx+b, i]]
                 if FLAGS.visu:
                     fout.write('v %f %f %f %d %d %d\n' % (pts[i,6], pts[i,7], pts[i,8], color[0], color[1], color[2]))
                     fout_gt.write('v %f %f %f %d %d %d\n' % (pts[i,6], pts[i,7], pts[i,8], color_gt[0], color_gt[1], color_gt[2]))
