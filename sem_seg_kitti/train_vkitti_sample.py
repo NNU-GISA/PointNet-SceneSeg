@@ -14,7 +14,7 @@ import glob
 import os
 import sys
 import provider
-from model import *
+from model_vkitti import *
 
 ########################################## CONSTANT ###############################################
 BATCH_SIZE = 24

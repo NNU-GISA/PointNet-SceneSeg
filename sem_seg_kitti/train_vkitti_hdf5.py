@@ -15,7 +15,7 @@ sys.path.append(ROOT_DIR)
 sys.path.append(os.path.join(ROOT_DIR, 'utils'))
 import provider
 import tf_util
-from model import *
+from model_vkitti import *
 
 # Parser
 parser = argparse.ArgumentParser()
@@ -112,7 +112,6 @@ def log_string(out_str):
     LOG_FOUT.flush()
     print(out_str)
 
-
 def get_learning_rate(batch):
     learning_rate = tf.train.exponential_decay(
         BASE_LEARNING_RATE,  # Base learning rate.
@@ -123,7 +122,6 @@ def get_learning_rate(batch):
     learning_rate = tf.maximum(learning_rate, 0.00001)  # CLIP THE LEARNING RATE!!
     return learning_rate
 
-
 def get_bn_decay(batch):
     bn_momentum = tf.train.exponential_decay(
         BN_INIT_DECAY,
@@ -133,7 +131,6 @@ def get_bn_decay(batch):
         staircase=True)
     bn_decay = tf.minimum(BN_DECAY_CLIP, 1 - bn_momentum)
     return bn_decay
-
 
 ## train
 def train():

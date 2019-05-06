@@ -4,7 +4,7 @@ import sys
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 ROOT_DIR = os.path.dirname(BASE_DIR)
 sys.path.append(BASE_DIR)
-from model import *
+from model_vkitti import *
 import indoor3d_util
 
 parser = argparse.ArgumentParser()
