@@ -3,19 +3,20 @@ import math
 import h5py
 import numpy as np
 import tensorflow as tf
-import socket
-
 import os
 import sys
+import socket
+import provider
+import tf_util
+from model_vkitti import *
+
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 ROOT_DIR = os.path.dirname(BASE_DIR)
 sys.path.append(BASE_DIR)
 sys.path.append(ROOT_DIR)
 sys.path.append(os.path.join(ROOT_DIR, 'utils'))
-import provider
-import tf_util
-from model_vkitti import *
+
 
 # Parser
 parser = argparse.ArgumentParser()
@@ -54,7 +55,7 @@ LOG_FOUT.write(str(FLAGS) + '\n')
 
 # Const
 MAX_NUM_POINT = 4096
-NUM_CLASSES = 13
+NUM_CLASSES = 14
 BN_INIT_DECAY = 0.5
 BN_DECAY_DECAY_RATE = 0.5
 # BN_DECAY_DECAY_STEP = float(DECAY_STEP * 2)
@@ -74,9 +75,13 @@ label_batch_list = []
 for h5_filename in ALL_FILES:
     # use provider.loadDataFile
     #data_batch, label_batch = provider.loadDataFile('{}/data/{}'.format(ROOT_DIR, h5_filename))
+    print(h5_filename)
     data_batch, label_batch = provider.loadDataFile(h5_filename)
     data_batch_list.append(data_batch)
     label_batch_list.append(label_batch)
+    print(data_batch.shape)
+    print(label_batch.shape)
+
 data_batches = np.concatenate(data_batch_list, 0)
 label_batches = np.concatenate(label_batch_list, 0)
 print(data_batches.shape)
@@ -84,6 +89,7 @@ print(label_batches.shape)
 
 # train test area split
 test_area = 'Area_' + str(FLAGS.test_area)
+print(test_area)
 train_idxs = []
 test_idxs = []
 for i, room_name in enumerate(room_filelist):
@@ -92,6 +98,8 @@ for i, room_name in enumerate(room_filelist):
     else:
         train_idxs.append(i)
 
+print(len(train_idxs))
+print(len(test_idxs))
 # train test data
 train_data = data_batches[train_idxs, ...]
 train_label = label_batches[train_idxs]

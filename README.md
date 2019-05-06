@@ -17,3 +17,6 @@ Once you have downloaded and prepared data, to start training use train_vkitti.p
 
 For data visualization you can use vis_data_vispy.py file.
 
+## Debug
+
+IndexError: index 7000 is out of bounds for axis 0 with size 7000

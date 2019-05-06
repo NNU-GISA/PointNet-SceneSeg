@@ -105,6 +105,5 @@ def load_h5_data_label_seg(h5_filename):
     seg = f['pid'][:]
     return (data, label, seg)
 
-
 def loadDataFile_with_seg(filename):
     return load_h5_data_label_seg(filename)

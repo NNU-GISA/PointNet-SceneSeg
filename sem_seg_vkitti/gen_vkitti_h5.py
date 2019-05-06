@@ -12,7 +12,7 @@ data_dim = [NUM_POINT, 9]
 label_dim = [NUM_POINT]
 data_dtype = 'float32'
 label_dtype = 'uint8'
-least_pts = 1000
+
 # set paths
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 ROOT_DIR = os.path.dirname(BASE_DIR)
@@ -62,7 +62,7 @@ def insert_batch(data, label, last_batch=False):
         # Save batch data and label to h5 file, reset buffer_size
         h5_filename =  output_filename_prefix + '_' + str(h5_index) + '.h5'
         save_h5(h5_filename, h5_batch_data, h5_batch_label, data_dtype, label_dtype)
-        # write all_files
+        # write all_files.txt 1
         fout_hdf5.write(output_filename_prefix + '_' + str(h5_index)+ '.h5' + '\n')
         print('Stored {0} with size {1}'.format(h5_filename, h5_batch_data.shape[0]))
         h5_index += 1
@@ -72,6 +72,8 @@ def insert_batch(data, label, last_batch=False):
     if last_batch and buffer_size > 0:
         h5_filename =  output_filename_prefix + '_' + str(h5_index) + '.h5'
         save_h5(h5_filename, h5_batch_data[0:buffer_size, ...], h5_batch_label[0:buffer_size, ...], data_dtype, label_dtype)
+        # write all_files.txt 2
+        fout_hdf5.write(output_filename_prefix + '_' + str(h5_index) + '.h5' + '\n')
         print('Stored {0} with size {1}'.format(h5_filename, buffer_size))
         h5_index += 1
         buffer_size = 0
@@ -118,7 +120,7 @@ for root, dirs, files in os.walk(vkitti_data_dir_origin):
     #print('files', files)
     for srcfile in files:
         print(srcfile, root[-1:])
-        copy_file(os.path.join(root,srcfile), os.path.join(vkitti_data_dir,'area{}_{}'.format(root[-1:], srcfile)))
+        copy_file(os.path.join(root,srcfile), os.path.join(vkitti_data_dir,'Area_{}_{}'.format(root[-1:], srcfile)))
 
 filelist = []
 for root, dirs, files in os.walk(vkitti_data_dir):
