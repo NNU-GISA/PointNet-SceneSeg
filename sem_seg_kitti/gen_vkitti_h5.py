@@ -29,7 +29,9 @@ output_filename_prefix = os.path.join(output_dir, 'ply_data_all')
 # filelist txt
 output_room_filelist = os.path.join(output_dir, 'room_filelist.txt')
 fout_room = open(output_room_filelist, 'w')
-
+# h5 file txt
+hdf5_filelist = os.path.join(output_dir, 'all_files.txt')
+fout_hdf5 = open(hdf5_filelist, 'w')
 ######################################## LOAD AND NORMALIZE DATA ########################################
 ##1 load npy
 def room2blocks_wrapper_normalized(data_label_filename, num_point, block_size=1.0, stride=1.0,
@@ -216,6 +218,8 @@ def insert_batch(data, label, last_batch=False):
         # Save batch data and label to h5 file, reset buffer_size
         h5_filename =  output_filename_prefix + '_' + str(h5_index) + '.h5'
         save_h5(h5_filename, h5_batch_data, h5_batch_label, data_dtype, label_dtype)
+        # write all_files
+        fout_hdf5.write(output_filename_prefix + '_' + str(h5_index) + '\n')
         print('Stored {0} with size {1}'.format(h5_filename, h5_batch_data.shape[0]))
         h5_index += 1
         buffer_size = 0
@@ -294,6 +298,8 @@ for i, data_label_filename in enumerate(filelist):
     sample_cnt += data.shape[0]
     # save hdf5 file
     insert_batch(data, label, i == len(filelist)-1)
+
 # txt file close
 fout_room.close()
+fout_hdf5.close()
 print("Total samples: {0}".format(sample_cnt))
