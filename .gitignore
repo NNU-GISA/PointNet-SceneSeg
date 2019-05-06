@@ -1,0 +1,6 @@
+.idea
+log/
+data/
+*.pyc
+*.so
+*.egg-info
