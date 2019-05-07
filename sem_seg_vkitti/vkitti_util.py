@@ -7,7 +7,8 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 ROOT_DIR = os.path.dirname(BASE_DIR)
 sys.path.append(BASE_DIR)
 
-least_pts = 1000
+# critcal hyper-parameter
+least_pts = 100
 
 # -----------------------------------------------------------------------------
 # CONSTANTS COLOR PLATE

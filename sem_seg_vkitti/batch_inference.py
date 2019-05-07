@@ -16,7 +16,7 @@ parser.add_argument('--num_point', type=int, default=4096, help='Point number [d
 #parser.add_argument('--output_filelist', required=True, help='TXT filename, filelist, each line is an output for a room')
 #parser.add_argument('--room_data_filelist', required=True, help='TXT filename, filelist, each line is a test room data label file.')
 parser.add_argument('--model_path', default='log/model.ckpt', help='model checkpoint file path')
-parser.add_argument('--dump_dir', default='log/dump', help='dump folder path')
+parser.add_argument('--dump_dir', default='log/dump_100', help='dump folder path')
 parser.add_argument('--output_filelist', default='log/output_filelist.txt', help='TXT filename, filelist, each line is an output for a room')
 parser.add_argument('--no_clutter', action='store_true', help='If true, donot count the clutter class')
 parser.add_argument('--visu', action='store_true', help='Whether to output OBJ file for prediction visualization.')
