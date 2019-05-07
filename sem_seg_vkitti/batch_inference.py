@@ -15,15 +15,14 @@ parser.add_argument('--num_point', type=int, default=4096, help='Point number [d
 #parser.add_argument('--dump_dir', required=True, help='dump folder path')
 #parser.add_argument('--output_filelist', required=True, help='TXT filename, filelist, each line is an output for a room')
 #parser.add_argument('--room_data_filelist', required=True, help='TXT filename, filelist, each line is a test room data label file.')
-
 parser.add_argument('--model_path', default='log/model.ckpt', help='model checkpoint file path')
 parser.add_argument('--dump_dir', default='log/dump', help='dump folder path')
 parser.add_argument('--output_filelist', default='log/output_filelist.txt', help='TXT filename, filelist, each line is an output for a room')
-
 parser.add_argument('--no_clutter', action='store_true', help='If true, donot count the clutter class')
 parser.add_argument('--visu', action='store_true', help='Whether to output OBJ file for prediction visualization.')
-FLAGS = parser.parse_args()
 
+########################################## CONSTANT DATADIR ##########################################
+FLAGS = parser.parse_args()
 NUM_CLASSES = 14
 BATCH_SIZE = FLAGS.batch_size
 NUM_POINT = FLAGS.num_point
@@ -33,7 +32,9 @@ DUMP_DIR = FLAGS.dump_dir
 if not os.path.exists(DUMP_DIR): os.mkdir(DUMP_DIR)
 LOG_FOUT = open(os.path.join(DUMP_DIR, 'log_evaluate.txt'), 'w')
 LOG_FOUT.write(str(FLAGS)+'\n')
+
 #ROOM_PATH_LIST = [os.path.join(ROOT_DIR,line.rstrip()) for line in open(FLAGS.room_data_filelist)]
+# set area 6 as test
 ROOM_PATH_LIST = []
 npy_dir =  os.path.join(ROOT_DIR, 'data','vkitti3d_dataset_rename')
 print(npy_dir)
@@ -44,12 +45,14 @@ for root, dirs, files in os.walk(npy_dir):
             ROOM_PATH_LIST.append('{}/{}'.format(npy_dir, npyfile))
 print(ROOM_PATH_LIST)
 
-
+############################################# EVALUATION ############################################
+## log function
 def log_string(out_str):
     LOG_FOUT.write(out_str+'\n')
     LOG_FOUT.flush()
     print(out_str)
 
+## evaluate
 def evaluate():
     is_training = False
     with tf.device('/gpu:'+str(GPU_INDEX)):
@@ -98,6 +101,7 @@ def evaluate():
     fout_out_filelist.close()
     log_string('all room eval accuracy: %f'% (total_correct / float(total_seen)))
 
+## evaluate and visualization
 def eval_one_epoch(sess, ops, room_path, out_data_label_filename, out_gt_label_filename):
     error_cnt = 0
     is_training = False
@@ -106,6 +110,7 @@ def eval_one_epoch(sess, ops, room_path, out_data_label_filename, out_gt_label_f
     loss_sum = 0
     total_seen_class = [0 for _ in range(NUM_CLASSES)]
     total_correct_class = [0 for _ in range(NUM_CLASSES)]
+    # vis data name
     if FLAGS.visu:
         fout = open(os.path.join(DUMP_DIR, os.path.basename(room_path)[:-4]+'_pred.obj'), 'w')
         fout_gt = open(os.path.join(DUMP_DIR, os.path.basename(room_path)[:-4]+'_gt.obj'), 'w')
@@ -126,7 +131,6 @@ def eval_one_epoch(sess, ops, room_path, out_data_label_filename, out_gt_label_f
     num_batches = file_size // BATCH_SIZE
     print(file_size)
 
-    
     for batch_idx in range(num_batches):
         start_idx = batch_idx * BATCH_SIZE
         end_idx = (batch_idx+1) * BATCH_SIZE
