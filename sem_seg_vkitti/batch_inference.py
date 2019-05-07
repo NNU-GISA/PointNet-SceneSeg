@@ -11,14 +11,20 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--gpu', type=int, default=0, help='GPU to use [default: GPU 0]')
 parser.add_argument('--batch_size', type=int, default=1, help='Batch Size during training [default: 1]')
 parser.add_argument('--num_point', type=int, default=4096, help='Point number [default: 4096]')
-parser.add_argument('--model_path', required=True, help='model checkpoint file path')
-parser.add_argument('--dump_dir', required=True, help='dump folder path')
-parser.add_argument('--output_filelist', required=True, help='TXT filename, filelist, each line is an output for a room')
-parser.add_argument('--room_data_filelist', required=True, help='TXT filename, filelist, each line is a test room data label file.')
+#parser.add_argument('--model_path', required=True, help='model checkpoint file path')
+#parser.add_argument('--dump_dir', required=True, help='dump folder path')
+#parser.add_argument('--output_filelist', required=True, help='TXT filename, filelist, each line is an output for a room')
+#parser.add_argument('--room_data_filelist', required=True, help='TXT filename, filelist, each line is a test room data label file.')
+
+parser.add_argument('--model_path', default='log/model.ckpt', help='model checkpoint file path')
+parser.add_argument('--dump_dir', default='log/dump', help='dump folder path')
+parser.add_argument('--output_filelist', default='log/output_filelist.txt', help='TXT filename, filelist, each line is an output for a room')
+
 parser.add_argument('--no_clutter', action='store_true', help='If true, donot count the clutter class')
 parser.add_argument('--visu', action='store_true', help='Whether to output OBJ file for prediction visualization.')
 FLAGS = parser.parse_args()
 
+NUM_CLASSES = 14
 BATCH_SIZE = FLAGS.batch_size
 NUM_POINT = FLAGS.num_point
 MODEL_PATH = FLAGS.model_path
@@ -27,9 +33,17 @@ DUMP_DIR = FLAGS.dump_dir
 if not os.path.exists(DUMP_DIR): os.mkdir(DUMP_DIR)
 LOG_FOUT = open(os.path.join(DUMP_DIR, 'log_evaluate.txt'), 'w')
 LOG_FOUT.write(str(FLAGS)+'\n')
-ROOM_PATH_LIST = [os.path.join(ROOT_DIR,line.rstrip()) for line in open(FLAGS.room_data_filelist)]
+#ROOM_PATH_LIST = [os.path.join(ROOT_DIR,line.rstrip()) for line in open(FLAGS.room_data_filelist)]
+ROOM_PATH_LIST = []
+npy_dir =  os.path.join(ROOT_DIR, 'data','vkitti3d_dataset_rename')
+print(npy_dir)
+for root, dirs, files in os.walk(npy_dir):
+    for npyfile in files:
+        print(npyfile)
+        if 'Area_6' in npyfile:
+            ROOM_PATH_LIST.append('{}/{}'.format(npy_dir, npyfile))
+print(ROOM_PATH_LIST)
 
-NUM_CLASSES = 14
 
 def log_string(out_str):
     LOG_FOUT.write(out_str+'\n')
@@ -38,7 +52,6 @@ def log_string(out_str):
 
 def evaluate():
     is_training = False
-     
     with tf.device('/gpu:'+str(GPU_INDEX)):
         pointclouds_pl, labels_pl = placeholder_inputs(BATCH_SIZE, NUM_POINT)
         is_training_pl = tf.placeholder(tf.bool, shape=())
@@ -164,7 +177,6 @@ def eval_one_epoch(sess, ops, room_path, out_data_label_filename, out_gt_label_f
         fout.close()
         fout_gt.close()
     return total_correct, total_seen
-
 
 if __name__=='__main__':
     with tf.Graph().as_default():

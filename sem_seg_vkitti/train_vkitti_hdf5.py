@@ -21,7 +21,7 @@ sys.path.append(os.path.join(ROOT_DIR, 'utils'))
 # Parser
 parser = argparse.ArgumentParser()
 parser.add_argument('--gpu', type=int, default=0, help='GPU to use [default: GPU 0]')
-parser.add_argument('--log_dir', default='log/', help='Log dir [default: log]')
+parser.add_argument('--log_dir', default='log1/', help='Log dir [default: log]')
 parser.add_argument('--num_point', type=int, default=4096, help='Point number [default: 4096]')
 parser.add_argument('--max_epoch', type=int, default=50, help='Epoch to run [default: 50]')
 parser.add_argument('--batch_size', type=int, default=24, help='Batch Size during training [default: 24]')
