@@ -17,7 +17,7 @@ sys.path.append(BASE_DIR)
 sys.path.append(ROOT_DIR)
 sys.path.append(os.path.join(ROOT_DIR, 'utils'))
 
-
+########################################## CONSTANT DATADIR ##########################################
 # Parser
 parser = argparse.ArgumentParser()
 parser.add_argument('--gpu', type=int, default=0, help='GPU to use [default: GPU 0]')
@@ -64,11 +64,11 @@ BN_DECAY_CLIP = 0.99
 HOSTNAME = socket.gethostname()
 
 # Load file names
-
 ALL_FILES = provider.getDataFiles('{}/data/vkitti_hdf5_test/all_files.txt'.format(ROOT_DIR))
 room_filelist = [line.rstrip() for line in
                  open('{}/data/vkitti_hdf5_test/room_filelist.txt'.format(ROOT_DIR))]
 
+########################################## DATA PREPARE ##########################################
 # Load ALL data -> provider
 data_batch_list = []
 label_batch_list = []
@@ -97,9 +97,9 @@ for i, room_name in enumerate(room_filelist):
         test_idxs.append(i)
     else:
         train_idxs.append(i)
-
 print(len(train_idxs))
 print(len(test_idxs))
+
 # train test data
 train_data = data_batches[train_idxs, ...]
 train_label = label_batches[train_idxs]
@@ -109,13 +109,18 @@ print(train_data.shape, train_label.shape)
 print(test_data.shape, test_label.shape)
 
 '''
-(23585, 4096, 9)
-(23585, 4096)
-(20291, 4096, 9) (20291, 4096)
-(3294, 4096, 9) (3294, 4096)
+(672, 4096, 9)
+(672, 4096)
+(7672, 4096, 9)
+(7672, 4096)
+Area_6
+6657
+1015
+((6657, 4096, 9), (6657, 4096))
+((1015, 4096, 9), (1015, 4096))
 '''
 
-
+########################################## UTIL FUNCTION ##########################################
 def log_string(out_str):
     LOG_FOUT.write(out_str + '\n')
     LOG_FOUT.flush()
@@ -141,11 +146,12 @@ def get_bn_decay(batch):
     bn_decay = tf.minimum(BN_DECAY_CLIP, 1 - bn_momentum)
     return bn_decay
 
+########################################## TRAIN FUNCTION ##########################################
 ## train
 def train():
     with tf.Graph().as_default():  # tf graph
         with tf.device('/gpu:' + str(GPU_INDEX)):  # GPU id
-            # pl
+            # place holder
             pointclouds_pl, labels_pl = placeholder_inputs(BATCH_SIZE, NUM_POINT)
             is_training_pl = tf.placeholder(tf.bool, shape=())
 
@@ -215,7 +221,6 @@ def train():
                 save_path = saver.save(sess, os.path.join(LOG_DIR, "model.ckpt"))
                 log_string("Model saved in file: %s" % save_path)
 
-
 ## train one epoch
 def train_one_epoch(sess, ops, train_writer):
     """ ops: dict mapping from string to tf ops """
@@ -244,9 +249,7 @@ def train_one_epoch(sess, ops, train_writer):
                      ops['labels_pl']: current_label[start_idx:end_idx],
                      ops['is_training_pl']: is_training, }
         # run net
-        summary, step, _, loss_val, pred_val = sess.run(
-            [ops['merged'], ops['step'], ops['train_op'], ops['loss'], ops['pred']],
-            feed_dict=feed_dict)
+        summary, step, _, loss_val, pred_val = sess.run([ops['merged'], ops['step'], ops['train_op'], ops['loss'], ops['pred']], feed_dict=feed_dict)
         train_writer.add_summary(summary, step)
         # loss and acc
         pred_val = np.argmax(pred_val, 2)
@@ -257,7 +260,6 @@ def train_one_epoch(sess, ops, train_writer):
     # calculate
     log_string('mean loss: %f' % (loss_sum / float(num_batches)))
     log_string('accuracy: %f' % (total_correct / float(total_seen)))
-
 
 ## eval one epoch
 def eval_one_epoch(sess, ops, test_writer):
@@ -303,9 +305,7 @@ def eval_one_epoch(sess, ops, test_writer):
 
     log_string('eval mean loss: %f' % (loss_sum / float(total_seen / NUM_POINT)))
     log_string('eval accuracy: %f' % (total_correct / float(total_seen)))
-    log_string('eval avg class acc: %f' % (
-        np.mean(np.array(total_correct_class) / np.array(total_seen_class, dtype=np.float))))
-
+    log_string('eval avg class acc: %f' % (np.mean(np.array(total_correct_class) / np.array(total_seen_class, dtype=np.float))))
 
 if __name__ == "__main__":
     train()

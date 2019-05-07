@@ -29,7 +29,7 @@ LOG_FOUT = open(os.path.join(DUMP_DIR, 'log_evaluate.txt'), 'w')
 LOG_FOUT.write(str(FLAGS)+'\n')
 ROOM_PATH_LIST = [os.path.join(ROOT_DIR,line.rstrip()) for line in open(FLAGS.room_data_filelist)]
 
-NUM_CLASSES = 13
+NUM_CLASSES = 14
 
 def log_string(out_str):
     LOG_FOUT.write(out_str+'\n')

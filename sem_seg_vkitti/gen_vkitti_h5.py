@@ -23,7 +23,7 @@ vkitti_data_dir_origin = os.path.join(data_dir, 'vkitti3d_dataset_v1.0')
 vkitti_data_dir = os.path.join(data_dir, 'vkitti3d_dataset_rename')
 if not os.path.exists(vkitti_data_dir):
     os.mkdir(vkitti_data_dir)
-output_dir = os.path.join(data_dir, 'vkitti_hdf5_test')
+output_dir = os.path.join(data_dir, 'vkitti_hdf5_test_1')
 if not os.path.exists(output_dir):
     os.mkdir(output_dir)
 output_filename_prefix = os.path.join(output_dir, 'ply_data_all')
@@ -112,7 +112,6 @@ def copy_file(srcfile,dstfile):
             os.makedirs(fpath)
         shutil.copyfile(srcfile,dstfile)
         print ("copy %s -> %s"%( srcfile,dstfile))
-
 
 for root, dirs, files in os.walk(vkitti_data_dir_origin):
     #print('root', root)
